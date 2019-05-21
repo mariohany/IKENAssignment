@@ -124,7 +124,6 @@ public class MovieListAdapter extends RecyclerView.Adapter {
             releaseDate.setText(mMovies.get(listIndex).getRelease_date());
             overview.setText(mMovies.get(listIndex).getOverview());
         }
-
     }
 
     public static class ProgressViewHolder extends RecyclerView.ViewHolder {

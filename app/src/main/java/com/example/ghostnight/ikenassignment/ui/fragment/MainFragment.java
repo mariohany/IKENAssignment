@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -27,15 +29,17 @@ import com.example.ghostnight.ikenassignment.retrofit.NetworkService;
 import com.example.ghostnight.ikenassignment.retrofit.retrofit_model.SearchMoviesPageResbonseModel;
 import com.example.ghostnight.ikenassignment.retrofit.retrofit_response.SearchMoviesResbonse;
 import com.example.ghostnight.ikenassignment.ui.adapter.MovieListAdapter;
+import com.example.ghostnight.ikenassignment.ui.adapter.QueryAdapter;
 import com.example.ghostnight.ikenassignment.utils.NetworkUtils;
 
 import java.util.ArrayList;
 
 
-public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreListener, SearchMoviesResbonse.MoviesResbonseListener{
+public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreListener, SearchMoviesResbonse.MoviesResbonseListener, QueryAdapter.QueryItemClickListener {
 
     private RecyclerView list;
     private MovieListAdapter adapter;
+    private QueryAdapter queryAdapter;
     private ArrayList<Movie> mMovies;
     private EditText queryEdit;
     private Button clearBtn;
@@ -43,6 +47,7 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
     private int pageNumber;
     private String query;
     private ProgressBar loader;
+    ArrayList<String> queries;
 
     public MainFragment() {
         // Required empty public constructor
@@ -64,6 +69,7 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
         pageNumber=1;
         mMovies = new ArrayList<>();
+        queries = new ArrayList<>();
         loader = view.findViewById(R.id.progress);
         noItem = view.findViewById(R.id.noItems);
         clearBtn = view.findViewById(R.id.clear_btn);
@@ -72,6 +78,8 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
         list = view.findViewById(R.id.list);
         list.setLayoutManager(gridLayoutManager);
         list.setHasFixedSize(true);
+        queryAdapter = new QueryAdapter(queries, this, getContext());
+
 
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,10 +89,16 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
             }
         });
 
+        queryEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                list.setAdapter(queryAdapter);
+            }
+        });
+
         queryEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -109,6 +123,7 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     queryEdit.clearFocus();
+                    list.setAdapter(adapter);
                     InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     in.hideSoftInputFromWindow(queryEdit.getWindowToken(), 0);
                     pageNumber = 1;
@@ -154,6 +169,16 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
     @Override
     public void onGetMoviesSuccessfuly(SearchMoviesPageResbonseModel body) {
         if(pageNumber == 1) {
+            if(!(queries.indexOf(query) >=0)) {
+                if (queries.size() < 10) {
+                    queries.add(0, query);
+                } else {
+                    queries.remove(9);
+                    queries.add(0, query);
+                }
+                queryAdapter = new QueryAdapter(queries, this, getContext());
+            }
+
             mMovies.clear();
             for (int i = 0; i < body.getResults().size(); i++) {
                 mMovies.add(new Movie(body.getResults().get(i).getTitle(),
@@ -210,5 +235,10 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
     void hideLoader() {
         loader.setVisibility(View.GONE);
         list.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onQueryItemClick(String query) {
+        callApi(pageNumber, query);
     }
 }
