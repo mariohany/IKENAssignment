@@ -32,7 +32,6 @@ public class SearchMoviesResbonse implements Callback<SearchMoviesPageResbonseMo
 
     public interface MoviesResbonseListener {
         void onGetMoviesSuccessfuly(SearchMoviesPageResbonseModel body);
-
         void onGetMoviesFailed(String status_message);
     }
 

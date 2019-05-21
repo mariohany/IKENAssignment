@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">IKEN Assignment</string>
+
+
+    <string name="search_editText_hint">Search....</string>
+    <string name="no_internet">No Internet Connection</string>
+    <string name="title_holder">Title</string>
+    <string name="release_holder">12/10/2019</string>
+    <string name="description_holder">description</string>
+    <string name="no_favorite_movies">No Favorite Movies</string>
+    <string name="no_movies">No Movies To Display</string>
 </resources>
