@@ -163,7 +163,7 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
                 pageNumber++;
                 callApi(pageNumber, query);
             }
-        }, 1500);
+        }, 500);
     }
 
     @Override
@@ -239,6 +239,8 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
 
     @Override
     public void onQueryItemClick(String query) {
+        pageNumber=1;
+        this.query=query;
         callApi(pageNumber, query);
     }
 }
