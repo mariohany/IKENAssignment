@@ -1,7 +1,9 @@
-package com.example.ghostnight.ikenassignment;
+package com.example.ghostnight.ikenassignment.ui.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.ghostnight.ikenassignment.R;
 
 public class MainActivity extends AppCompatActivity {
 
