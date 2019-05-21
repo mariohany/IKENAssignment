@@ -7,5 +7,5 @@ In this app user can search movies, and watch overview about any movie.
     
 <H2>App Screens</H2>
 <table>
-  <td><img src="https://github.com/mariohany/Movietrailer/blob/master/ScreenShots/Screenshot_1555417316.png" hight="200" width="150"></td></tr>
+  <td><img src="https://github.com/mariohany/IKENAssignment/blob/master/ScreenShots/Screenshot_1558474349.png" hight="200" width="150"></td></tr>
 </table>
