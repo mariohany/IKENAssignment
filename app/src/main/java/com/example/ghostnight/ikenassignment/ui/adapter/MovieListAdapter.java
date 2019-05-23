@@ -31,6 +31,7 @@ public class MovieListAdapter extends RecyclerView.Adapter {
 
     public interface LoadMoreListener {
         void onLoadMoreClick();
+        void onListItemClick(Movie mMovie);
     }
 
     public MovieListAdapter(List<Movie> movies, final LoadMoreListener listener, Context context, RecyclerView recyclerView) {
@@ -96,7 +97,7 @@ public class MovieListAdapter extends RecyclerView.Adapter {
         return mMovies.size();
     }
 
-    class ListViewHolder extends RecyclerView.ViewHolder {
+    class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         ImageView image;
         TextView title;
@@ -106,6 +107,7 @@ public class MovieListAdapter extends RecyclerView.Adapter {
 
         ListViewHolder(@NonNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             image = itemView.findViewById(R.id.image);
             title = itemView.findViewById(R.id.title);
             releaseDate = itemView.findViewById(R.id.release_date);
@@ -123,6 +125,11 @@ public class MovieListAdapter extends RecyclerView.Adapter {
             title.setText(mMovies.get(listIndex).getTitle());
             releaseDate.setText(mMovies.get(listIndex).getRelease_date());
             overview.setText(mMovies.get(listIndex).getOverview());
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onListItemClick(mMovies.get(getAdapterPosition()));
         }
     }
 

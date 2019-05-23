@@ -5,9 +5,36 @@ public class MoviesResbonseModel {
     int vote_count;
     float vote_average;
     String title;
+    float popularity;
+    String original_language;
+    boolean adult;
     String poster_path;
     String overview;
     String release_date;
+
+    public float getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(float popularity) {
+        this.popularity = popularity;
+    }
+
+    public String getOriginal_language() {
+        return original_language;
+    }
+
+    public void setOriginal_language(String original_language) {
+        this.original_language = original_language;
+    }
+
+    public boolean isAdult() {
+        return adult;
+    }
+
+    public void setAdult(boolean adult) {
+        this.adult = adult;
+    }
 
     public int getId() {
         return id;

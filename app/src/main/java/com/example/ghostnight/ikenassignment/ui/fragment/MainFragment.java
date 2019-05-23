@@ -37,6 +37,7 @@ import java.util.ArrayList;
 
 public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreListener, SearchMoviesResbonse.MoviesResbonseListener, QueryAdapter.QueryItemClickListener {
 
+    private OnFragmentInteractionListener mListener;
     private RecyclerView list;
     private MovieListAdapter adapter;
     private QueryAdapter queryAdapter;
@@ -48,6 +49,10 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
     private String query;
     private ProgressBar loader;
     ArrayList<String> queries;
+
+    public interface OnFragmentInteractionListener {
+        void onListItemSelected(Movie movie);
+    }
 
     public MainFragment() {
         // Required empty public constructor
@@ -124,8 +129,6 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     queryEdit.clearFocus();
                     list.setAdapter(adapter);
-                    InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    in.hideSoftInputFromWindow(queryEdit.getWindowToken(), 0);
                     pageNumber = 1;
                     query = queryEdit.getText().toString();
                     callApi(pageNumber, query);
@@ -151,6 +154,23 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
     public void onLoadMoreClick() {
         mMovies.add(null);
         adapter.notifyItemInserted(mMovies.size()-1);
@@ -164,6 +184,11 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
                 callApi(pageNumber, query);
             }
         }, 500);
+    }
+
+    @Override
+    public void onListItemClick(Movie movie) {
+        mListener.onListItemSelected(movie);
     }
 
     @Override
@@ -181,19 +206,31 @@ public class MainFragment extends Fragment implements MovieListAdapter.LoadMoreL
 
             mMovies.clear();
             for (int i = 0; i < body.getResults().size(); i++) {
-                mMovies.add(new Movie(body.getResults().get(i).getTitle(),
+                mMovies.add(new Movie(body.getResults().get(i).getId(),
+                        body.getResults().get(i).getVote_average(),
+                        body.getResults().get(i).getPopularity(),
+                        body.getResults().get(i).getOriginal_language(),
+                        body.getResults().get(i).isAdult(),
+                        body.getResults().get(i).getTitle(),
                         body.getResults().get(i).getPoster_path(),
                         body.getResults().get(i).getOverview(),
-                        body.getResults().get(i).getRelease_date()));
+                        body.getResults().get(i).getRelease_date(),
+                        body.getResults().get(i).getVote_count()));
 
             }
             populateList();
         }else{
             for (int i = 0; i < body.getResults().size(); i++) {
-                mMovies.add(new Movie(body.getResults().get(i).getTitle(),
+                mMovies.add(new Movie(body.getResults().get(i).getId(),
+                        body.getResults().get(i).getVote_average(),
+                        body.getResults().get(i).getPopularity(),
+                        body.getResults().get(i).getOriginal_language(),
+                        body.getResults().get(i).isAdult(),
+                        body.getResults().get(i).getTitle(),
                         body.getResults().get(i).getPoster_path(),
                         body.getResults().get(i).getOverview(),
-                        body.getResults().get(i).getRelease_date()));
+                        body.getResults().get(i).getRelease_date(),
+                        body.getResults().get(i).getVote_count()));
                 adapter.notifyItemInserted(mMovies.size());
             }
             adapter.setLoaded();
